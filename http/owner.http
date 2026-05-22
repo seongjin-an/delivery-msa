@@ -1,0 +1,93 @@
+### [1] Owner 회원가입
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "owner1@delivery-msa.com",
+  "password": "owner1111",
+  "name": "사장님",
+  "phone": "010-2222-2222",
+  "role": "OWNER"
+}
+
+### [2] Owner 로그인
+# accessToken, refreshToken 복사해서 아래 변수에 붙여넣기
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "owner1@delivery-msa.com",
+  "password": "owner1111"
+}
+
+### [3] 가게 등록
+# X-User-Id: 위 응답의 accessToken을 Authorization에 사용 (Gateway가 X-User-Id 주입)
+# category: KOREAN, CHINESE, JAPANESE, PIZZA, BURGER, CHICKEN, CAFE, OTHER
+POST http://localhost:8080/api/owner/restaurants
+Content-Type: application/json
+Authorization: Bearer <OWNER_ACCESS_TOKEN>
+
+{
+  "name": "테스트 치킨집",
+  "phone": "02-1234-5678",
+  "address": "서울시 강남구 테헤란로 1",
+  "category": "CHICKEN",
+  "minOrderAmount": 15000,
+  "deliveryFee": 3000,
+  "estimatedDeliveryMinutes": 30
+}
+
+### [4] 메뉴 등록 (restaurantId는 [3] 응답에서 복사)
+POST http://localhost:8080/api/owner/restaurants/<RESTAURANT_ID>/menus
+Content-Type: application/json
+Authorization: Bearer <OWNER_ACCESS_TOKEN>
+
+{
+  "name": "후라이드 치킨",
+  "description": "바삭한 후라이드",
+  "price": 18000,
+  "categoryName": "치킨",
+  "sortOrder": 1,
+  "options": [
+    {
+      "name": "사이즈",
+      "items": [
+        { "name": "보통", "extraPrice": 0 },
+        { "name": "대", "extraPrice": 3000 }
+      ]
+    }
+  ]
+}
+
+### [5] 메뉴 추가 등록
+POST http://localhost:8080/api/owner/restaurants/<RESTAURANT_ID>/menus
+Content-Type: application/json
+Authorization: Bearer <OWNER_ACCESS_TOKEN>
+
+{
+  "name": "양념 치킨",
+  "description": "달콤한 양념",
+  "price": 19000,
+  "categoryName": "치킨",
+  "sortOrder": 2
+}
+
+### [6] 가게 오픈
+PATCH http://localhost:8080/api/owner/restaurants/<RESTAURANT_ID>/open
+Authorization: Bearer <OWNER_ACCESS_TOKEN>
+
+### [7] 내 가게 주문 목록 조회 (주문 들어온 후 확인용)
+GET http://localhost:8080/api/owner/orders?restaurantId=<RESTAURANT_ID>
+Authorization: Bearer <OWNER_ACCESS_TOKEN>
+
+### [8] 주문 수락 (orderId는 customer.http [3] 응답에서 복사)
+PATCH http://localhost:8080/api/owner/orders/<ORDER_ID>/accept
+Authorization: Bearer <OWNER_ACCESS_TOKEN>
+
+### [9] 픽업 준비 완료
+PATCH http://localhost:8080/api/owner/orders/<ORDER_ID>/ready
+Authorization: Bearer <OWNER_ACCESS_TOKEN>
+
+### [10] 가게 마감
+PATCH http://localhost:8080/api/owner/restaurants/<RESTAURANT_ID>/close
+Authorization: Bearer <OWNER_ACCESS_TOKEN>

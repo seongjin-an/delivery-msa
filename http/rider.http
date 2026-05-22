@@ -1,0 +1,54 @@
+### [1] Rider 회원가입
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "rider1@delivery-msa.com",
+  "password": "rider1111",
+  "name": "라이더",
+  "phone": "010-4444-4444",
+  "role": "RIDER"
+}
+
+### [2] Rider 로그인
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "rider1@delivery-msa.com",
+  "password": "rider1111"
+}
+
+### [3] 배달 가능한 주문 목록 조회 (owner가 READY_FOR_PICKUP 처리 후 나타남)
+GET http://localhost:8080/api/deliveries/available
+Authorization: Bearer <RIDER_ACCESS_TOKEN>
+
+### [4] 배달 수락 (orderId는 [3] 응답에서 복사)
+POST http://localhost:8080/api/deliveries/accept/<ORDER_ID>
+Authorization: Bearer <RIDER_ACCESS_TOKEN>
+
+### [5] 현재 위치 업데이트
+POST http://localhost:8080/api/deliveries/location
+Content-Type: application/json
+Authorization: Bearer <RIDER_ACCESS_TOKEN>
+
+{
+  "latitude": 37.4980,
+  "longitude": 127.0276
+}
+
+### [6] 음식 픽업 완료 (deliveryId는 [4] 응답에서 복사)
+PATCH http://localhost:8080/api/deliveries/<DELIVERY_ID>/pickup
+Authorization: Bearer <RIDER_ACCESS_TOKEN>
+
+### [7] 배달 완료
+PATCH http://localhost:8080/api/deliveries/<DELIVERY_ID>/complete
+Authorization: Bearer <RIDER_ACCESS_TOKEN>
+
+### [8] 내 배달 이력
+GET http://localhost:8080/api/deliveries/my
+Authorization: Bearer <RIDER_ACCESS_TOKEN>
+
+### [9] 내 알림 목록 (배달 배정/픽업/완료 이벤트 확인용)
+GET http://localhost:8080/api/notifications
+Authorization: Bearer <RIDER_ACCESS_TOKEN>
