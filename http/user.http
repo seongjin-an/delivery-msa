@@ -1,0 +1,33 @@
+### 회원가입
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "admin1@delivery-msa.com",
+  "password": "admin1111",
+  "name": "admin1",
+  "phone": "010-1111-1111",
+  "role": "ADMIN"
+}
+
+### 로그인
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin1@delivery-msa.com",
+  "password": "admin1111"
+}
+
+### 사용자 정보
+GET http://localhost:8080/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhOGVjMTU4OS04MWZhLTQ5NWUtODQzMy0wZTE4YmY4NWIyOWQiLCJzdWIiOiI2NTgyZDRmMi04Njk0LTQ0YTAtOGMzMC02MjA4MjhiNGU1M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3Nzk0Mjc3MDgsImV4cCI6MTc3OTQzMTMwOH0.NU4wODFAHfRM7tPTZEZ_nJZjHlGFin7vu_wlL8WsFh8AdDoxF68f06bYfJ8f4I-mKLHe1hzxVcvV9LHmx6dHGQ
+
+### 토큰 리프레쉬
+POST http://localhost:8080/api/auth/refresh
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhNWFlMDdiOS0zZDllLTRlZjItYTBhYS0yMTZlYmJmZWJlNTAiLCJzdWIiOiI2NTgyZDRmMi04Njk0LTQ0YTAtOGMzMC02MjA4MjhiNGU1M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3Nzk0Mjc1MzQsImV4cCI6MTc3OTQzMTEzNH0._rWYKsuxZPm1uu7g1nV-oZKETiPgEi_ITcSLt_eZJ_D4L22zpvt-WJ9KB69oBroFucOWJxzTZwikgOymbofneQ
+
+{
+  "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIzYWJkN2M4Yy0yMDkyLTRjMmItYjY1ZS1hNGUyYzMxMzA4NWEiLCJzdWIiOiI2NTgyZDRmMi04Njk0LTQ0YTAtOGMzMC02MjA4MjhiNGU1M2YiLCJpYXQiOjE3Nzk0Mjc1MzQsImV4cCI6MTc4MDAzMjMzNH0.iidiCeqdD1zpz1zrnUO-m9kw4MnRtL06q88yW_c3oAOZ-kwlY8a-2ctJNuUbBjBTNEVIWl5yw0Sgu15lNpgHFg"
+}

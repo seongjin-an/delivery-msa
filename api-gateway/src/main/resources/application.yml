@@ -1,0 +1,93 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: api-gateway
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  cloud:
+    gateway:
+      routes:
+        # ── user-service ─────────────────────────────────────────────────────────
+        - id: user-service-auth
+          uri: lb://user-service
+          predicates:
+            - Path=/api/auth/**
+          # 회원가입·로그인은 JWT 필터 없이 통과 (필터 내부에서 permit 처리)
+          filters:
+            - JwtAuthentication
+
+        # ── restaurant-service ───────────────────────────────────────────────────
+        - id: restaurant-service-public
+          uri: lb://restaurant-service
+          predicates:
+            - Path=/api/restaurants/**
+            - Method=GET
+          # 공개 조회 → JWT 불필요
+
+        - id: restaurant-service-owner
+          uri: lb://restaurant-service
+          predicates:
+            - Path=/api/owner/restaurants/**
+          filters:
+            - JwtAuthentication
+
+        - id: restaurant-service-menus
+          uri: lb://restaurant-service
+          predicates:
+            - Path=/api/owner/restaurants/*/menus/**
+          filters:
+            - JwtAuthentication
+
+        # ── order-service ────────────────────────────────────────────────────────
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/orders/**, /api/owner/orders/**
+          filters:
+            - JwtAuthentication
+
+        # ── payment-service ──────────────────────────────────────────────────────
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/payments/**
+          filters:
+            - JwtAuthentication
+
+        # ── delivery-service ─────────────────────────────────────────────────────
+        - id: delivery-service
+          uri: lb://delivery-service
+          predicates:
+            - Path=/api/rider/deliveries/**, /api/orders/*/delivery
+          filters:
+            - JwtAuthentication
+
+        # ── notification-service ─────────────────────────────────────────────────
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - JwtAuthentication
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret: ${JWT_SECRET:delivery-secret-key-must-be-at-least-256-bits-long-for-hs256-algorithm}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, gateway
